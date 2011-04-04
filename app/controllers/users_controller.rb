@@ -4,8 +4,14 @@ class UsersController < ApplicationController
   before_filter :admin_user, :only => :destroy
   before_filter :user_signed_in, :only => :create
 
+  def index
+    @title = "All users"
+    @users = User.paginate(:page => params[:page])
+  end
+
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(:page => params[:page])
     @title = @user.name
   end
 
@@ -41,16 +47,6 @@ class UsersController < ApplicationController
       @title = "Edit user"
       render 'edit'
     end
-  end
-  
-  def index
-    @title = "All users"
-    @users = User.paginate(:page => params[:page])
-  end
-  
-  def show
-    @user = User.find(params[:id])
-    @title = @user.name
   end
   
   def destroy
